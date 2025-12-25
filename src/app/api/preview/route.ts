@@ -3,8 +3,8 @@ import { getAIProvider } from '@/lib/ai/providers';
 
 export const maxDuration = 60;
 
-// セクション名の定義
-const SECTIONS = [
+// セクション名の定義（日本語）
+const SECTIONS_JA = [
   '1. 概要',
   '2. ユーザー種別',
   '3. 機能一覧',
@@ -13,6 +13,18 @@ const SECTIONS = [
   '6. 各画面詳細',
   '7. 技術スタック',
   '8. 決定事項・補足情報',
+];
+
+// Section names (English)
+const SECTIONS_EN = [
+  '1. Overview',
+  '2. User Types',
+  '3. Features',
+  '4. Screen List',
+  '5. Screen Flow',
+  '6. Screen Details',
+  '7. Tech Stack',
+  '8. Decisions & Notes',
 ];
 
 // Markdownをセクションごとに分割
@@ -55,8 +67,10 @@ function parseMarkdownSections(markdown: string): Map<string, string> {
 }
 
 // セクションを結合してMarkdownを生成
-function buildMarkdown(sections: Map<string, string>): string {
-  const projectName = sections.get('projectName') || '# プロジェクト名';
+function buildMarkdown(sections: Map<string, string>, locale: string = 'ja'): string {
+  const SECTIONS = locale === 'en' ? SECTIONS_EN : SECTIONS_JA;
+  const defaultProjectName = locale === 'en' ? '# Project Name' : '# プロジェクト名';
+  const projectName = sections.get('projectName') || defaultProjectName;
   let markdown = projectName + '\n\n';
   
   for (const sectionName of SECTIONS) {
@@ -76,13 +90,16 @@ export async function POST(req: Request) {
       messages,
       currentMarkdown,
       apiKey,
+      locale = 'ja',
     }: {
       messages: { role: 'user' | 'assistant'; content: string }[];
       currentMarkdown?: string;
       apiKey?: string;
+      locale?: 'ja' | 'en';
     } = body;
 
     const model = getAIProvider(apiKey);
+    const SECTIONS = locale === 'en' ? SECTIONS_EN : SECTIONS_JA;
 
     // 空のメッセージをフィルタリング
     const filteredMessages = messages
@@ -96,13 +113,15 @@ export async function POST(req: Request) {
     }
 
     // 会話履歴をAIに渡す形式に整形
+    const userLabel = locale === 'en' ? 'User' : 'ユーザー';
+    const aiLabel = locale === 'en' ? 'AI' : 'AI';
     const conversationForAI = filteredMessages
-      .map((m) => `【${m.role === 'user' ? 'ユーザー' : 'AI'}】\n${m.content.trim()}`)
+      .map((m) => `【${m.role === 'user' ? userLabel : aiLabel}】\n${m.content.trim()}`)
       .join('\n\n---\n\n');
 
     // 差分更新モード（既存のMarkdownがある場合）
     if (currentMarkdown && currentMarkdown.trim().length > 100) {
-      const diffPrompt = `あなたは仕様書更新AIです。既存の仕様書と新しい会話を比較し、更新が必要なセクションのみを出力してください。
+      const diffPromptJa = `あなたは仕様書更新AIです。既存の仕様書と新しい会話を比較し、更新が必要なセクションのみを出力してください。
 
 【重要ルール】
 - 変更があるセクションのみを出力してください
@@ -141,6 +160,47 @@ ${conversationForAI}
 
 変更が必要なセクションのみをMarkdown形式で出力してください。`;
 
+      const diffPromptEn = `You are a specification update AI. Compare the existing specification with the new conversation and output only the sections that need to be updated.
+
+【Important Rules】
+- Output only sections that have changes
+- Each section should start with "## Section Name"
+- Do not output sections without changes
+- Output only Markdown, no explanations needed
+- If the project name is confirmed, also output "# Project Name"
+- For "8. Decisions & Notes" section, organize extracted decisions and requirements as bullet points (no raw conversation logs)
+
+【Section List】
+${SECTIONS.map(s => `- ${s}`).join('\n')}
+
+【How to write "5. Screen Flow" - Important】
+If there is information about screen list or screen transitions, always output a screen flow diagram in Mermaid format:
+\`\`\`mermaid
+graph TD
+    A[Top Page] --> B[Login]
+    B --> C[Dashboard]
+    C --> D[Detail Screen]
+\`\`\`
+* Even if screen information is "Not set", update it if screens can be identified from the conversation.
+
+【How to write "8. Decisions & Notes"】
+List the following content extracted from the conversation as bullet points:
+- Items explicitly decided/confirmed by the user
+- Important constraints or business rules
+- Supplementary information to note during development
+- Information about priorities or importance
+- Future expansion plans
+
+【Current Specification】
+${currentMarkdown}
+
+【Latest Conversation History】
+${conversationForAI}
+
+Output only the sections that need to be changed in Markdown format.`;
+
+      const diffPrompt = locale === 'en' ? diffPromptEn : diffPromptJa;
+
       const result = await generateText({
         model,
         messages: [
@@ -162,7 +222,7 @@ ${conversationForAI}
         }
       }
       
-      const mergedMarkdown = buildMarkdown(currentSections);
+      const mergedMarkdown = buildMarkdown(currentSections, locale);
       
       return new Response(
         JSON.stringify({ markdown: mergedMarkdown, isDiff: true }),
@@ -174,7 +234,7 @@ ${conversationForAI}
     }
 
     // 初回生成モード
-    const initialPrompt = `あなたは仕様書生成AIです。会話履歴を分析し、プロダクト仕様書をMarkdown形式で出力してください。
+    const initialPromptJa = `あなたは仕様書生成AIです。会話履歴を分析し、プロダクト仕様書をMarkdown形式で出力してください。
 
 【重要ルール】
 - 仕様書のMarkdownのみを出力してください
@@ -250,6 +310,85 @@ graph TD
 ${conversationForAI}
 
 上記フォーマットに従い、仕様書を生成してください。`;
+
+    const initialPromptEn = `You are a specification generation AI. Analyze the conversation history and output a product specification in Markdown format.
+
+【Important Rules】
+- Output only the specification Markdown
+- No greetings, explanations, or questions
+- Include only information confirmed from the conversation
+- Mark items not yet discussed as "Not set"
+- For "8. Decisions & Notes", organize extracted decisions as bullet points, not raw conversation logs
+
+【Output Format】
+
+# [Project Name / Service Name]
+
+## 1. Overview
+- **Service Description**: [Extract from conversation]
+- **Target Users**: [Extract from conversation]
+- **Problem to Solve**: [Extract from conversation]
+- **Similar Services**: [Extract from conversation]
+
+## 2. User Types
+
+| Type | Description |
+|------|-------------|
+| [Type] | [Description] |
+
+## 3. Features
+
+### What [User Type] can do
+| Feature | Description |
+|---------|-------------|
+| [Feature] | [Description] |
+
+## 4. Screen List
+
+| Screen Name | Target Users | Overview |
+|-------------|-------------|----------|
+| [Screen Name] | [Target] | [Overview] |
+
+## 5. Screen Flow
+
+【Important】If screens exist in the screen list, always output a flow diagram in Mermaid format.
+\`\`\`mermaid
+graph TD
+    A[Top Page] --> B[Login]
+    B --> C[Dashboard]
+    C --> D[Detail Screen]
+\`\`\`
+* Add subgraphs and screen nodes after graph TD, and express transitions between screens with arrows.
+
+## 6. Screen Details
+
+### [Screen Name]
+- **Displayed Information**: [Information]
+- **Actions**: [Actions]
+- **Transitions**: [Transitions]
+
+## 7. Tech Stack
+- **Frontend**: [Technology]
+- **Backend**: [Technology]
+- **Database**: [Technology]
+- **Authentication**: [Technology]
+- **Deployment**: [Technology]
+
+## 8. Decisions & Notes
+
+List the following as bullet points:
+- Items explicitly decided/confirmed by the user
+- Important constraints or business rules
+- Supplementary information to note during development
+- Information about priorities or importance
+- Future expansion plans
+
+【Conversation History】
+${conversationForAI}
+
+Generate the specification according to the format above.`;
+
+    const initialPrompt = locale === 'en' ? initialPromptEn : initialPromptJa;
 
     const result = await generateText({
       model,

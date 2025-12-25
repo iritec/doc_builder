@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat, Noto_Sans_JP } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default function JapaneseLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -48,3 +48,4 @@ export default function RootLayout({
     </html>
   );
 }
+

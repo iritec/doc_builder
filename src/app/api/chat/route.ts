@@ -12,16 +12,18 @@ export async function POST(req: Request) {
       messages, 
       apiKey,
       phase = 1,
-      spec = {}
+      spec = {},
+      locale = 'ja'
     }: {
       messages: { role: 'user' | 'assistant'; content: string }[];
       apiKey?: string;
       phase?: Phase;
       spec?: Partial<ProjectSpec>;
+      locale?: 'ja' | 'en';
     } = body;
 
     const model = getAIProvider(apiKey);
-    const systemPrompt = getSystemPrompt(phase, spec);
+    const systemPrompt = getSystemPrompt(phase, spec, locale);
 
     // 空のメッセージをフィルタリング
     const filteredMessages = messages

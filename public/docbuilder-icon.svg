@@ -1,0 +1,55 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="50%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#a855f7"/>
+    </linearGradient>
+    <linearGradient id="docGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#f0f0ff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square background -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="url(#bgGradient)"/>
+  
+  <!-- Document shape -->
+  <path d="M160 96 L320 96 L368 144 L368 416 L144 416 L144 96 Z" fill="url(#docGradient)" stroke="#e0e0ff" stroke-width="2"/>
+  
+  <!-- Document fold -->
+  <path d="M320 96 L320 144 L368 144" fill="#ddd5ff" stroke="#c4b5fd" stroke-width="2"/>
+  
+  <!-- Code lines on document -->
+  <rect x="176" y="176" width="80" height="12" rx="6" fill="#a78bfa"/>
+  <rect x="176" y="208" width="160" height="12" rx="6" fill="#c4b5fd"/>
+  <rect x="176" y="240" width="120" height="12" rx="6" fill="#c4b5fd"/>
+  <rect x="176" y="272" width="140" height="12" rx="6" fill="#c4b5fd"/>
+  
+  <!-- AI Chat bubble -->
+  <ellipse cx="340" cy="340" rx="88" ry="80" fill="white" stroke="#6366f1" stroke-width="4"/>
+  
+  <!-- AI sparkle/brain icon inside bubble -->
+  <g transform="translate(340, 340)">
+    <!-- Center dot -->
+    <circle cx="0" cy="0" r="8" fill="#8b5cf6"/>
+    
+    <!-- Sparkle arms -->
+    <path d="M0 -35 L4 -15 L0 -10 L-4 -15 Z" fill="#a855f7"/>
+    <path d="M0 35 L4 15 L0 10 L-4 15 Z" fill="#a855f7"/>
+    <path d="M-35 0 L-15 4 L-10 0 L-15 -4 Z" fill="#a855f7"/>
+    <path d="M35 0 L15 4 L10 0 L15 -4 Z" fill="#a855f7"/>
+    
+    <!-- Diagonal sparkles -->
+    <path d="M-24 -24 L-12 -8 L-8 -12 L-8 -12 Z" fill="#c4b5fd"/>
+    <path d="M24 -24 L12 -8 L8 -12 Z" fill="#c4b5fd"/>
+    <path d="M-24 24 L-12 8 L-8 12 Z" fill="#c4b5fd"/>
+    <path d="M24 24 L12 8 L8 12 Z" fill="#c4b5fd"/>
+  </g>
+  
+  <!-- Small decorative dots -->
+  <circle cx="280" cy="300" r="4" fill="#c4b5fd"/>
+  <circle cx="400" cy="380" r="4" fill="#c4b5fd"/>
+</svg>
+

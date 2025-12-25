@@ -28,7 +28,7 @@ const initialSpec: Partial<ProjectSpec> = {
   },
 };
 
-const INITIAL_PREVIEW_MARKDOWN = `# プロジェクト名
+const INITIAL_PREVIEW_MARKDOWN_JA = `# プロジェクト名
 
 ## 1. 概要
 - **サービス説明**: 未設定
@@ -71,7 +71,55 @@ const INITIAL_PREVIEW_MARKDOWN = `# プロジェクト名
 （まだ決定事項がありません）
 `;
 
-export const useAppStore = create<AppState & { _hasHydrated: boolean; setHasHydrated: (state: boolean) => void }>()(
+const INITIAL_PREVIEW_MARKDOWN_EN = `# Project Name
+
+## 1. Overview
+- **Service Description**: Not set
+- **Target Users**: Not set
+- **Problem to Solve**: Not set
+- **Similar Services**: Not set
+
+## 2. User Types
+
+| Type | Description |
+|------|-------------|
+| - | - |
+
+## 3. Features
+
+(Not set)
+
+## 4. Screen List
+
+| Screen Name | Target Users | Overview |
+|-------------|-------------|----------|
+| - | - | - |
+
+## 5. Screen Flow
+
+(Not set)
+
+## 6. Screen Details
+
+(Not set)
+
+## 7. Tech Stack
+- **Frontend**: Not set
+- **Backend**: Not set
+- **Authentication**: Not set
+- **Deployment**: Not set
+
+## 8. Decisions & Notes
+
+(No decisions yet)
+`;
+
+export const useAppStore = create<AppState & { 
+  _hasHydrated: boolean; 
+  setHasHydrated: (state: boolean) => void;
+  previewMarkdownEn: string;
+  setPreviewMarkdownEn: (markdown: string) => void;
+}>()(
   persist(
     (set) => ({
       messages: [],
@@ -79,7 +127,8 @@ export const useAppStore = create<AppState & { _hasHydrated: boolean; setHasHydr
       settings: initialSettings,
       spec: initialSpec,
       currentPhase: 1,
-      previewMarkdown: INITIAL_PREVIEW_MARKDOWN,
+      previewMarkdown: INITIAL_PREVIEW_MARKDOWN_JA,
+      previewMarkdownEn: INITIAL_PREVIEW_MARKDOWN_EN,
       _hasHydrated: false,
       setHasHydrated: (state) => set({ _hasHydrated: state }),
 
@@ -128,9 +177,16 @@ export const useAppStore = create<AppState & { _hasHydrated: boolean; setHasHydr
 
       setPreviewMarkdown: (markdown) => set({ previewMarkdown: markdown }),
 
+      setPreviewMarkdownEn: (markdown) => set({ previewMarkdownEn: markdown }),
+
       clearMessages: () => set({ messages: [] }),
 
-      resetSpec: () => set({ spec: initialSpec, currentPhase: 1, previewMarkdown: INITIAL_PREVIEW_MARKDOWN }),
+      resetSpec: () => set({ 
+        spec: initialSpec, 
+        currentPhase: 1, 
+        previewMarkdown: INITIAL_PREVIEW_MARKDOWN_JA,
+        previewMarkdownEn: INITIAL_PREVIEW_MARKDOWN_EN,
+      }),
     }),
     {
       name: 'spec-builder-storage',
@@ -140,6 +196,7 @@ export const useAppStore = create<AppState & { _hasHydrated: boolean; setHasHydr
         messages: state.messages,
         currentPhase: state.currentPhase,
         previewMarkdown: state.previewMarkdown,
+        previewMarkdownEn: state.previewMarkdownEn,
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);

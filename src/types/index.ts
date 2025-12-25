@@ -92,6 +92,7 @@ export interface AppState {
   spec: Partial<ProjectSpec>;
   currentPhase: Phase;
   previewMarkdown: string;
+  previewMarkdownEn: string;
   
   // アクション
   addMessage: (message: Omit<Message, 'id' | 'timestamp'>) => void;
@@ -102,6 +103,7 @@ export interface AppState {
   updateSpec: (spec: Partial<ProjectSpec>) => void;
   setPhase: (phase: Phase) => void;
   setPreviewMarkdown: (markdown: string) => void;
+  setPreviewMarkdownEn: (markdown: string) => void;
   clearMessages: () => void;
   resetSpec: () => void;
 }
