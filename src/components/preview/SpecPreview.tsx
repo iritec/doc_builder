@@ -125,8 +125,8 @@ export function SpecPreview() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="border-b p-4 shrink-0 flex items-center justify-between">
-        <h2 className="font-semibold">プレビュー</h2>
+      <div className="border-b p-3 sm:p-4 shrink-0 flex items-center justify-between">
+        <h2 className="font-semibold text-sm sm:text-base">プレビュー</h2>
         <Button
           variant="ghost"
           size="sm"
@@ -138,13 +138,13 @@ export function SpecPreview() {
           再生成
         </Button>
       </div>
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4">
         {isGenerating && (
-          <div className="text-sm text-muted-foreground mb-4">
+          <div className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
             仕様書を生成中...
           </div>
         )}
-        <div className="prose prose-sm dark:prose-invert max-w-none">
+        <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:text-base sm:prose-headings:text-lg">
           <ReactMarkdown 
             remarkPlugins={[remarkGfm]}
             components={markdownComponents}

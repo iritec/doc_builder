@@ -35,8 +35,11 @@ export function ExportButtons() {
   };
 
   return (
-    <div className="flex gap-2">
-      <Button variant="outline" size="sm" onClick={handleCopy}>
+    <div className="flex gap-1 sm:gap-2">
+      <Button variant="outline" size="icon-sm" onClick={handleCopy} className="sm:hidden">
+        {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+      </Button>
+      <Button variant="outline" size="sm" onClick={handleCopy} className="hidden sm:inline-flex">
         {copied ? (
           <>
             <Check className="w-4 h-4 mr-2" />
@@ -49,7 +52,10 @@ export function ExportButtons() {
           </>
         )}
       </Button>
-      <Button variant="outline" size="sm" onClick={handleDownload}>
+      <Button variant="outline" size="icon-sm" onClick={handleDownload} className="sm:hidden">
+        <Download className="w-4 h-4" />
+      </Button>
+      <Button variant="outline" size="sm" onClick={handleDownload} className="hidden sm:inline-flex">
         <Download className="w-4 h-4 mr-2" />
         ダウンロード
       </Button>

@@ -17,9 +17,10 @@ export function SettingsPanel() {
   const { settings, updateSettings, clearMessages, resetSpec } = useAppStore();
 
   const handleReset = () => {
-    if (confirm('チャット履歴と仕様書をリセットしますか？')) {
+    if (confirm('チャット履歴、仕様書、APIキーをすべてリセットしますか？')) {
       clearMessages();
       resetSpec();
+      updateSettings({ claudeApiKey: '' });
     }
   };
 
@@ -89,7 +90,7 @@ export function SettingsPanel() {
               className="w-full"
             >
               <Trash2 className="w-4 h-4 mr-2" />
-              チャット履歴と仕様書をリセット
+              すべてリセット（APIキー含む）
             </Button>
           </div>
         </div>

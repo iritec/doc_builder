@@ -71,7 +71,7 @@ const INITIAL_PREVIEW_MARKDOWN = `# プロジェクト名
 （まだ決定事項がありません）
 `;
 
-export const useAppStore = create<AppState>()(
+export const useAppStore = create<AppState & { _hasHydrated: boolean; setHasHydrated: (state: boolean) => void }>()(
   persist(
     (set) => ({
       messages: [],
@@ -80,6 +80,8 @@ export const useAppStore = create<AppState>()(
       spec: initialSpec,
       currentPhase: 1,
       previewMarkdown: INITIAL_PREVIEW_MARKDOWN,
+      _hasHydrated: false,
+      setHasHydrated: (state) => set({ _hasHydrated: state }),
 
       addMessage: (message) =>
         set((state) => ({
@@ -139,6 +141,9 @@ export const useAppStore = create<AppState>()(
         currentPhase: state.currentPhase,
         previewMarkdown: state.previewMarkdown,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

@@ -57,12 +57,12 @@ export function MessageList({ messages, isLoading, onEdit, onSaveEdit, onCancelE
 
   if (messages.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center text-muted-foreground overflow-hidden">
-        <div className="text-center space-y-4">
-          <Bot className="w-16 h-16 mx-auto opacity-50" />
+      <div className="flex-1 flex items-center justify-center text-muted-foreground overflow-hidden px-4">
+        <div className="text-center space-y-3 sm:space-y-4">
+          <Bot className="w-12 h-12 sm:w-16 sm:h-16 mx-auto opacity-50" />
           <div>
-            <p className="text-lg font-medium">仕様書作成を始めましょう</p>
-            <p className="text-sm">作りたいサービスについて教えてください</p>
+            <p className="text-base sm:text-lg font-medium">仕様書作成を始めましょう</p>
+            <p className="text-xs sm:text-sm">作りたいサービスについて教えてください</p>
           </div>
         </div>
       </div>
@@ -70,29 +70,29 @@ export function MessageList({ messages, isLoading, onEdit, onSaveEdit, onCancelE
   }
 
   return (
-    <div className="flex-1 overflow-y-auto overflow-x-hidden pr-4" ref={scrollRef}>
-      <div className="space-y-4 pb-4">
+    <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 sm:px-4" ref={scrollRef}>
+      <div className="space-y-3 sm:space-y-4 py-3 sm:py-4">
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex gap-3 group ${
+            className={`flex gap-2 sm:gap-3 group ${
               message.role === 'user' ? 'flex-row-reverse' : ''
             }`}
           >
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0 ${
                 message.role === 'user'
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-muted'
               }`}
             >
               {message.role === 'user' ? (
-                <User className="w-4 h-4" />
+                <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               ) : (
-                <Bot className="w-4 h-4" />
+                <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               )}
             </div>
-            <div className={`flex flex-col max-w-[80%] ${message.role === 'user' ? 'items-end' : 'items-start'}`}>
+            <div className={`flex flex-col max-w-[85%] sm:max-w-[80%] ${message.role === 'user' ? 'items-end' : 'items-start'}`}>
               {editingId === message.id ? (
                 <>
                   <div className="w-full rounded-lg border-2 border-primary bg-background">
@@ -129,7 +129,7 @@ export function MessageList({ messages, isLoading, onEdit, onSaveEdit, onCancelE
               ) : (
                 <>
                   <div
-                    className={`rounded-lg px-4 py-3 w-full ${
+                    className={`rounded-lg px-3 py-2 sm:px-4 sm:py-3 w-full ${
                       message.role === 'user'
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-muted border border-border'
@@ -160,15 +160,15 @@ export function MessageList({ messages, isLoading, onEdit, onSaveEdit, onCancelE
           </div>
         ))}
         {isLoading && (
-          <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-              <Bot className="w-4 h-4" />
+          <div className="flex gap-2 sm:gap-3">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-muted flex items-center justify-center">
+              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <div className="bg-muted rounded-lg px-4 py-3">
+            <div className="bg-muted rounded-lg px-3 py-2 sm:px-4 sm:py-3">
               <div className="flex gap-1">
-                <span className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce" />
-                <span className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:0.1s]" />
-                <span className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:0.2s]" />
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-foreground/50 rounded-full animate-bounce" />
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:0.1s]" />
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:0.2s]" />
               </div>
             </div>
           </div>

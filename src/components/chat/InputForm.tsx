@@ -22,7 +22,9 @@ export function InputForm({ onSubmit, isLoading, initialValue = '' }: InputFormP
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
+      const scrollHeight = textareaRef.current.scrollHeight;
+      // 最小40px、最大200px
+      textareaRef.current.style.height = `${Math.max(40, Math.min(scrollHeight, 200))}px`;
     }
   }, [input]);
 
@@ -58,15 +60,15 @@ export function InputForm({ onSubmit, isLoading, initialValue = '' }: InputFormP
   };
 
   return (
-    <div className="border-t bg-background p-4">
-      <div className="flex gap-2 items-end">
+    <div className="border-t bg-background p-2 sm:p-4">
+      <div className="flex gap-1.5 sm:gap-2 items-center">
         <Textarea
           ref={textareaRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="メッセージを入力... (Ctrl+EnterまたはShift+Enterで送信)"
-          className="min-h-[44px] max-h-[200px] resize-none"
+          className="min-h-10! max-h-[200px] resize-none py-2"
           disabled={isLoading}
           rows={1}
         />
@@ -74,8 +76,7 @@ export function InputForm({ onSubmit, isLoading, initialValue = '' }: InputFormP
           onClick={handleOkSubmit}
           disabled={isLoading}
           variant="outline"
-          size="sm"
-          className="shrink-0 gap-1"
+          className="shrink-0 gap-1 h-10"
         >
           <Check className="w-4 h-4" />
           OK
@@ -83,7 +84,7 @@ export function InputForm({ onSubmit, isLoading, initialValue = '' }: InputFormP
         <Button
           onClick={handleSubmit}
           disabled={!input.trim() || isLoading}
-          size="icon"
+          size="icon-lg"
           className="shrink-0"
         >
           <Send className="w-4 h-4" />

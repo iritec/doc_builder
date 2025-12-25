@@ -4,6 +4,8 @@ import { useAppStore } from '@/store/useAppStore';
 import { MessageList } from './MessageList';
 import { InputForm } from './InputForm';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { FilePlus } from 'lucide-react';
 import { Phase, ProjectSpec } from '@/types';
 
 export function ChatContainer() {
@@ -18,7 +20,9 @@ export function ChatContainer() {
     deleteMessagesAfter,
     setLoading,
     setPhase,
-    updateSpec
+    updateSpec,
+    clearMessages,
+    resetSpec
   } = useAppStore();
 
   const phaseLabels = {
@@ -27,6 +31,13 @@ export function ChatContainer() {
     3: '画面一覧と画面フロー',
     4: '各画面の詳細',
     5: '技術スタック提案',
+  };
+
+  const handleReset = () => {
+    if (window.confirm('会話履歴とプレビューをすべてリセットします。よろしいですか？')) {
+      clearMessages();
+      resetSpec();
+    }
   };
 
   const handleSaveEdit = async (messageId: string, newContent: string) => {
@@ -615,11 +626,25 @@ export function ChatContainer() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="border-b p-4 flex items-center justify-between">
-        <h2 className="font-semibold">AIと壁打ち</h2>
-        <Badge variant="secondary">
-          フェーズ {currentPhase}: {phaseLabels[currentPhase]}
-        </Badge>
+      <div className="border-b p-3 sm:p-4 flex items-center justify-between gap-2">
+        <h2 className="font-semibold text-sm sm:text-base shrink-0">AIと壁打ち</h2>
+        <div className="flex items-center gap-1 sm:gap-2">
+          <Badge variant="secondary" className="text-xs sm:text-sm whitespace-nowrap">
+            <span className="hidden sm:inline">フェーズ {currentPhase}: </span>
+            <span className="sm:hidden">P{currentPhase}: </span>
+            {phaseLabels[currentPhase]}
+          </Badge>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleReset}
+            disabled={isLoading}
+            className="text-muted-foreground hover:text-destructive"
+            title="新規プロジェクト"
+          >
+            <FilePlus className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
       <MessageList 
         messages={messages} 

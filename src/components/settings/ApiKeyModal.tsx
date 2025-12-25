@@ -14,18 +14,18 @@ import { Input } from '@/components/ui/input';
 import { Eye, EyeOff, AlertTriangle, ExternalLink } from 'lucide-react';
 
 export function ApiKeyModal() {
-  const { settings, updateSettings } = useAppStore();
+  const { settings, updateSettings, _hasHydrated } = useAppStore();
   const [open, setOpen] = useState(false);
   const [apiKey, setApiKey] = useState('');
   const [showKey, setShowKey] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // APIキーが未設定の場合にモーダルを表示
-    if (!settings.claudeApiKey) {
+    // ハイドレーション完了後、APIキーが未設定の場合にモーダルを表示
+    if (_hasHydrated && !settings.claudeApiKey) {
       setOpen(true);
     }
-  }, [settings.claudeApiKey]);
+  }, [_hasHydrated, settings.claudeApiKey]);
 
   const handleSave = () => {
     if (!apiKey.trim()) {
