@@ -10,10 +10,11 @@ import { Button } from '@/components/ui/button';
 import type { Components } from 'react-markdown';
 
 export function SpecPreview() {
-  const { messages, settings, previewMarkdown, setPreviewMarkdown } = useAppStore();
+  const { messages, settings, previewMarkdown, setPreviewMarkdown, isLoading } = useAppStore();
   const [isGenerating, setIsGenerating] = useState(false);
   const lastMessageCountRef = useRef(0);
   const markdownRef = useRef(previewMarkdown);
+  const prevIsLoadingRef = useRef(isLoading);
 
   // markdownの最新値を保持
   useEffect(() => {
@@ -63,20 +64,29 @@ export function SpecPreview() {
     }
   }, [messages, settings, setPreviewMarkdown]);
 
-  // 会話履歴が更新されたらプレビューを再生成（差分更新）
+  // ストリーミング完了時（isLoadingがtrue→falseに変わった時）にプレビューを自動生成
+  useEffect(() => {
+    // isLoadingがtrueからfalseに変わった時にプレビューを生成
+    if (prevIsLoadingRef.current && !isLoading && messages.length > 0) {
+      // デバウンス: ストリーミング完了から500ms後に生成
+      const timer = setTimeout(() => {
+        generatePreview(false);
+      }, 500);
+
+      prevIsLoadingRef.current = isLoading;
+      return () => clearTimeout(timer);
+    }
+    
+    prevIsLoadingRef.current = isLoading;
+  }, [isLoading, messages.length, generatePreview]);
+
+  // メッセージ数が増えた時（初回メッセージなど）の追従
   useEffect(() => {
     if (messages.length === 0) return;
     if (messages.length === lastMessageCountRef.current) return;
     
     lastMessageCountRef.current = messages.length;
-
-    // デバウンス: 最後のメッセージから2秒後に生成
-    const timer = setTimeout(() => {
-      generatePreview(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, [messages, generatePreview]);
+  }, [messages]);
 
   // 手動で全体を再生成
   const handleForceRegenerate = () => {
